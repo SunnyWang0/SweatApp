@@ -73,17 +73,17 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 			parts: [
 				{ text: prompt },
 				{
-					inlineData: {
-						mimeType: 'image/jpeg',
+					inline_data: {
+						mime_type: 'image/jpeg',
 						data: imageBase64
 					}
 				}
 			]
 		}],
-		generationConfig: {
-			temperature: 1,
-			topP: 0.95,
-			topK: 64,
+		generation_config: {
+			temperature: 0.9,
+			topP: 1,
+			topK: 32,
 			maxOutputTokens: 8192,
 		}
 	};
