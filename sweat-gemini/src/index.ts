@@ -31,7 +31,7 @@ interface RequestBody {
 	image: string;
 }
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro-vision:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-thinking-exp-1219:generateContent';
 
 async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
 	const prompt = `Analyze this preworkout supplement label. For each ingredient:
@@ -81,9 +81,9 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 			]
 		}],
 		generationConfig: {
-			temperature: 0.4,
-			topP: 0.8,
-			topK: 40,
+			temperature: 1,
+			topP: 0.95,
+			topK: 64,
 			maxOutputTokens: 8192,
 		}
 	};
