@@ -33,7 +33,28 @@ interface GeminiResponse {
 
 const MODEL_NAME = 'gemini-1.5-flash';
 
-async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<string> {
+function cleanAndParseGeminiResponse(rawResponse: string): PreworkoutAnalysis {
+	try {
+		// Parse the raw Gemini response
+		const geminiResponse = JSON.parse(rawResponse) as GeminiResponse;
+		
+		// Get the text content
+		const text = geminiResponse.candidates[0].content.parts[0].text;
+		
+		// Remove markdown code block and clean the string
+		const cleanJson = text
+			.replace(/```json\n/, '')  // Remove opening ```json
+			.replace(/\n```$/, '')     // Remove closing ```
+			.trim();                   // Remove extra whitespace
+		
+		// Parse the cleaned JSON
+		return JSON.parse(cleanJson) as PreworkoutAnalysis;
+	} catch (error) {
+		throw new Error(`Failed to parse Gemini response: ${error}`);
+	}
+}
+
+async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
 	const prompt = `Analyze this preworkout supplement label. For each ingredient:
 		1. List its exact quantity as shown on the label
 		2. Explain what this ingredient does in clear, straightforward language
@@ -101,8 +122,8 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		throw new Error(`Gemini API error: ${response.statusText}`);
 	}
 
-	const data = await response.text();
-	return data;
+	const rawResponse = await response.text();
+	return cleanAndParseGeminiResponse(rawResponse);
 }
 
 export default {
@@ -118,10 +139,10 @@ export default {
 				return new Response('Image data is required', { status: 400 });
 			}
 
-			const rawResponse = await analyzePreworkoutImage(body.image, env.GEMINI_API_KEY);
+			const analysis = await analyzePreworkoutImage(body.image, env.GEMINI_API_KEY);
 			
-			return new Response(rawResponse, {
-				headers: { 'Content-Type': 'text/plain' }
+			return new Response(JSON.stringify(analysis, null, 2), {
+				headers: { 'Content-Type': 'application/json' }
 			});
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
