@@ -39,7 +39,7 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		2. Explain what this ingredient does in clear, straightforward language
 		3. Describe its main benefits and effects in full sentences that any adult can understand
 		
-		Then rate the following qualities on a scale of 1-100 based on the ingredients, their quantity, and their effects:
+		Then rate the following qualities on a scale of 1-100 based on the ingredients and their effects. Also make sure to consider the quantity of the ingredient as it can effect how much you feel each quality:
 		- Pump (muscle blood flow and vasodilation)
 		- Energy (stimulant effects and alertness)
 		- Focus (mental clarity and concentration)
