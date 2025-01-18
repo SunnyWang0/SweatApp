@@ -17,6 +17,10 @@ interface Env {
 	GEMINI_API_KEY: string;
 }
 
+interface RequestBody {
+	image: string;
+}
+
 interface GeminiResponse {
 	candidates: Array<{
 		content: {
@@ -27,11 +31,7 @@ interface GeminiResponse {
 	}>;
 }
 
-interface RequestBody {
-	image: string;
-}
-
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-thinking-exp-1219:generateContent';
+const MODEL_NAME = 'gemini-1.5-flash';
 
 async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
 	const prompt = `Analyze this preworkout supplement label. For each ingredient:
@@ -83,12 +83,13 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		generationConfig: {
 			temperature: 1,
 			topP: 0.95,
-			topK: 64,
+			topK: 40,
 			maxOutputTokens: 8192,
+			responseMimeType: "text/plain",
 		}
 	};
 
-	const response = await fetch(GEMINI_API_URL, {
+	const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${MODEL_NAME}:generateContent`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
