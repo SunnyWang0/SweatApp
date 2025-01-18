@@ -1,0 +1,14 @@
+Main Idea: App that allows users to scan preworkout labels using their camera. It will then list all the ingredients and their effects on the body and the mind. The above part uses gemini 2.0 vision. The main idea is to make the ingredients more transparent to the user. 
+
+After scanning the label, the app will show the ingredients, their effects, and then a stats bar that shows the qualities of the preworkout. I can describe it as similar to a pokemon stats bar for prewokout, where it will show how stimulaintg, energy, and focus it is.
+
+The qualites the app should rate should be:
+- Pump
+- Energy
+- Focus
+- Strength
+- Recovery
+- Weight Loss
+- Hydration
+- Curculation
+- Endurance
