@@ -105,7 +105,7 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 	}
 
 	// Extract the JSON string from the response text
-	const responseText = data.candidates[0].content.parts[0].text;
+	const responseText = data.candidates[0].content.parts[1].text;
 	const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 	
 	if (!jsonMatch) {
