@@ -6,9 +6,7 @@ The qualites the app should rate should be:
 - Pump
 - Energy
 - Focus
-- Strength
 - Recovery
-- Weight Loss
-- Hydration
-- Curculation
 - Endurance
+
+Aside from that there will be a review section where users can review the preworkout and give it a rating. The main focus of the analysis page (after the scan) should be the qualities stats and the rating in the form of for example 60% liked. Scrolling down, you should be able to see the ingredients and their effects. and at the bottom the reviews.
