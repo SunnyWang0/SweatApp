@@ -35,7 +35,7 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemi
 
 async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
 	const prompt = `Analyze this preworkout supplement label. List all ingredients and their effects. 
-		Also rate the following qualities on a scale of 1-100:
+		Also rate the following qualities on a scale of 1-100 based on the ingredients, their quantity, and their effects:
 		- Pump (muscle blood flow and vasodilation)
 		- Energy (stimulant effects and alertness)
 		- Focus (mental clarity and concentration)
@@ -52,7 +52,10 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 				"recovery": number,
 				"endurance": number
 			}
-		}`;
+		}
+		
+		Do not include any other text or commentary in your response.
+		`;
 
 	const requestBody = {
 		contents: [{
