@@ -40,7 +40,7 @@ def print_analysis(analysis):
 
 if __name__ == "__main__":
     # Replace with your image path
-    image_path = "./sweat-gemini/test_preworkout.webp"
+    image_path = "./sweat-gemini/buckedup.webp"
     
     if not Path(image_path).exists():
         print(f"Error: Image file '{image_path}' not found.")
