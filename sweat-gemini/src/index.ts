@@ -31,28 +31,7 @@ interface GeminiResponse {
 	}>;
 }
 
-const MODEL_NAME = 'gemini-1.5-flash';
-
-function cleanAndParseGeminiResponse(rawResponse: string): PreworkoutAnalysis {
-	try {
-		// Parse the raw Gemini response
-		const geminiResponse = JSON.parse(rawResponse) as GeminiResponse;
-		
-		// Get the text content
-		const text = geminiResponse.candidates[0].content.parts[0].text;
-		
-		// Remove markdown code block and clean the string
-		const cleanJson = text
-			.replace(/```json\n/, '')  // Remove opening ```json
-			.replace(/\n```$/, '')     // Remove closing ```
-			.trim();                   // Remove extra whitespace
-		
-		// Parse the cleaned JSON
-		return JSON.parse(cleanJson) as PreworkoutAnalysis;
-	} catch (error) {
-		throw new Error(`Failed to parse Gemini response: ${error}`);
-	}
-}
+const MODEL_NAME = 'gemini-2.0-flash-thinking-exp-1219';
 
 async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
 	const prompt = `Analyze this preworkout supplement label. For each ingredient:
@@ -73,7 +52,7 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 				{
 					"name": string,
 					"quantity": string,
-					"effects": string[]  // Each effect should be a complete, clear sentence or sentences explaining what the ingredient does
+					"effects": string[]
 				}
 			],
 			"qualities": {
@@ -85,9 +64,7 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 			}
 		}
 		
-		Make sure each effect description is written in plain English that any adult can understand, while still being accurate and informative. Do not use overly technical language, but also don't oversimplify to the point of losing important information.
-		
-		Do not include any other text or commentary in your response.`;
+		Make sure each effect description is written in plain English that any adult can understand. Do not include any other text or commentary in your response.`;
 
 	const requestBody = {
 		contents: [{
@@ -104,9 +81,8 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		generationConfig: {
 			temperature: 1,
 			topP: 0.95,
-			topK: 40,
+			topK: 64,
 			maxOutputTokens: 8192,
-			responseMimeType: "text/plain",
 		}
 	};
 
@@ -122,8 +98,25 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		throw new Error(`Gemini API error: ${response.statusText}`);
 	}
 
-	const rawResponse = await response.text();
-	return cleanAndParseGeminiResponse(rawResponse);
+	const data = await response.json() as GeminiResponse;
+	
+	if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+		throw new Error('Invalid response format from Gemini API');
+	}
+
+	// Extract the JSON string from the response text
+	const responseText = data.candidates[0].content.parts[0].text;
+	const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+	
+	if (!jsonMatch) {
+		throw new Error('Could not find JSON in response');
+	}
+
+	try {
+		return JSON.parse(jsonMatch[0]) as PreworkoutAnalysis;
+	} catch (e) {
+		throw new Error('Failed to parse response JSON');
+	}
 }
 
 export default {
