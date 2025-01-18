@@ -1,7 +1,7 @@
-
 interface PreworkoutAnalysis {
 	ingredients: Array<{
 		name: string;
+		quantity: string;
 		effects: string[];
 	}>;
 	qualities: {
@@ -34,8 +34,12 @@ interface RequestBody {
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro-vision:generateContent';
 
 async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
-	const prompt = `Analyze this preworkout supplement label. List all ingredients and their effects. 
-		Also rate the following qualities on a scale of 1-100 based on the ingredients, their quantity, and their effects:
+	const prompt = `Analyze this preworkout supplement label. For each ingredient:
+		1. List its exact quantity as shown on the label
+		2. Explain what this ingredient does in clear, straightforward language
+		3. Describe its main benefits and effects in full sentences that any adult can understand
+		
+		Then rate the following qualities on a scale of 1-100 based on the ingredients, their quantity, and their effects:
 		- Pump (muscle blood flow and vasodilation)
 		- Energy (stimulant effects and alertness)
 		- Focus (mental clarity and concentration)
@@ -44,7 +48,13 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		
 		Format the response as JSON with this structure:
 		{
-			"ingredients": [{"name": string, "effects": string[]}],
+			"ingredients": [
+				{
+					"name": string,
+					"quantity": string,
+					"effects": string[]  // Each effect should be a complete, clear sentence or sentences explaining what the ingredient does
+				}
+			],
 			"qualities": {
 				"pump": number,
 				"energy": number,
@@ -54,8 +64,9 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 			}
 		}
 		
-		Do not include any other text or commentary in your response.
-		`;
+		Make sure each effect description is written in plain English that any adult can understand, while still being accurate and informative. Do not use overly technical language, but also don't oversimplify to the point of losing important information.
+		
+		Do not include any other text or commentary in your response.`;
 
 	const requestBody = {
 		contents: [{
