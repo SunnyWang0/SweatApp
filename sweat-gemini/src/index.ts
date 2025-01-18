@@ -33,7 +33,7 @@ interface GeminiResponse {
 
 const MODEL_NAME = 'gemini-1.5-flash';
 
-async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
+async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<string> {
 	const prompt = `Analyze this preworkout supplement label. For each ingredient:
 		1. List its exact quantity as shown on the label
 		2. Explain what this ingredient does in clear, straightforward language
@@ -89,11 +89,10 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		}
 	};
 
-	const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/${MODEL_NAME}:generateContent`, {
+	const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${apiKey}`
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(requestBody)
 	});
@@ -102,8 +101,8 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 		throw new Error(`Gemini API error: ${response.statusText}`);
 	}
 
-	const data = await response.json() as GeminiResponse;
-	return JSON.parse(data.candidates[0].content.parts[0].text) as PreworkoutAnalysis;
+	const data = await response.text();
+	return data;
 }
 
 export default {
@@ -119,10 +118,10 @@ export default {
 				return new Response('Image data is required', { status: 400 });
 			}
 
-			const analysis = await analyzePreworkoutImage(body.image, env.GEMINI_API_KEY);
+			const rawResponse = await analyzePreworkoutImage(body.image, env.GEMINI_API_KEY);
 			
-			return new Response(JSON.stringify(analysis), {
-				headers: { 'Content-Type': 'application/json' }
+			return new Response(rawResponse, {
+				headers: { 'Content-Type': 'text/plain' }
 			});
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
