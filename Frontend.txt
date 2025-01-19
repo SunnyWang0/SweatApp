@@ -1,0 +1,16 @@
+Two pages: You and Camera
+
+The tabs are organized on the bottom of the screen with the left most button being the You screen, the right most button being the Camera screen.
+
+
+Camera Screen:
+Open viewfinder and allow user to take 2 pictures. One of the front of the preworkout and one picture of the back of the preworkout where the ingredients are visible. This screen should then convert the second image with the ingredients visible to base64 and pass the image to the backend. 
+
+
+You Screen:
+Past scans button: Show past scans in the form of a list and image of the front of the preworkout. Allow the user to click into items and look through the ingredients, effects, qualities, ratings and reviews.
+
+Favorites button: Show favorites in the form of a list and image of the front of the preworkout. Allow the user to click into items and look through the ingredients, effects, qualities, ratings and reviews.
+
+
+
