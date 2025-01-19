@@ -47,7 +47,7 @@ struct HomeView: View {
     @State private var selectedTab = 0
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 Picker("", selection: $selectedTab) {
                     Text("Past Scans").tag(0)
@@ -156,14 +156,21 @@ struct PreworkoutDetailView: View {
                 
                 // Qualities
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Qualities")
-                        .font(.headline)
+                    Text("STATS")
+                        .font(.system(.title3, design: .rounded))
+                        .bold()
                         .padding(.horizontal)
                     
-                    ForEach(Array(scan.qualities.keys.sorted()), id: \.self) { key in
-                        QualityBar(label: key, value: scan.qualities[key] ?? 0)
+                    VStack(spacing: 8) {
+                        ForEach(Array(scan.qualities.keys.sorted()), id: \.self) { key in
+                            QualityBar(label: key, value: scan.qualities[key] ?? 0)
+                        }
                     }
+                    .padding(.vertical, 8)
+                    .background(Color.gray.opacity(0.05))
+                    .cornerRadius(12)
                 }
+                .padding(.vertical, 8)
                 
                 // Ingredients and Effects
                 VStack(alignment: .leading, spacing: 12) {
@@ -219,25 +226,39 @@ struct QualityBar: View {
     let label: String
     let value: Int
     
+    private var barColor: Color {
+        switch value {
+            case 0...20: return .red
+            case 21...40: return .orange
+            case 41...60: return .yellow
+            case 61...80: return .green
+            default: return .blue
+        }
+    }
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        HStack {
             Text(label.capitalized)
-                .font(.subheadline)
+                .font(.system(.subheadline, design: .rounded))
+                .frame(width: 100, alignment: .leading)
+            
+            Text("\(value)")
+                .font(.system(.subheadline, design: .monospaced))
+                .foregroundColor(.secondary)
+                .frame(width: 40)
             
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
-                    Rectangle()
-                        .frame(width: geometry.size.width, height: 8)
-                        .opacity(0.1)
-                        .foregroundColor(.gray)
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 16)
                     
-                    Rectangle()
-                        .frame(width: geometry.size.width * CGFloat(value) / 100, height: 8)
-                        .foregroundColor(.blue)
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(barColor)
+                        .frame(width: geometry.size.width * CGFloat(value) / 100, height: 16)
                 }
-                .cornerRadius(4)
             }
-            .frame(height: 8)
+            .frame(height: 16)
         }
         .padding(.horizontal)
     }

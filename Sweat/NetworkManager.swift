@@ -28,7 +28,7 @@ enum NetworkError: Error {
 
 class NetworkManager {
     static let shared = NetworkManager()
-    private let baseURL = "YOUR_BACKEND_URL" // TODO: Replace with actual backend URL
+    private let baseURL = "https://sweat-gemini.unleashai-inquiries.workers.dev/"
     
     private init() {}
     

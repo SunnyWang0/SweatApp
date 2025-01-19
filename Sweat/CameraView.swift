@@ -106,23 +106,21 @@ struct NameInputView: View {
     let onSave: () -> Void
     
     var body: some View {
-        NavigationView {
-            Form {
-                TextField("Preworkout Name", text: $name)
-            }
-            .navigationTitle("Name Your Preworkout")
-            .navigationBarItems(
-                leading: Button("Cancel") {
-                    name = ""
-                    dismiss()
-                },
-                trailing: Button("Save") {
-                    onSave()
-                    dismiss()
-                }
-                .disabled(name.isEmpty)
-            )
+        Form {
+            TextField("Preworkout Name", text: $name)
         }
+        .navigationTitle("Name Your Preworkout")
+        .navigationBarItems(
+            leading: Button("Cancel") {
+                name = ""
+                dismiss()
+            },
+            trailing: Button("Save") {
+                onSave()
+                dismiss()
+            }
+            .disabled(name.isEmpty)
+        )
     }
 }
 
@@ -166,7 +164,7 @@ struct CameraView: View {
     @StateObject private var viewModel = CameraViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 if viewModel.frontImage == nil || viewModel.backImage == nil {
                     Text(viewModel.isCapturingFront ? "Take a picture of the front" : "Take a picture of the ingredients")
@@ -237,8 +235,10 @@ struct CameraView: View {
                 )
             }
             .sheet(isPresented: $viewModel.showingNameInput) {
-                NameInputView(name: $viewModel.preworkoutName) {
-                    viewModel.handleSave()
+                NavigationStack {
+                    NameInputView(name: $viewModel.preworkoutName) {
+                        viewModel.handleSave()
+                    }
                 }
             }
             .alert("Error", isPresented: $viewModel.showError) {
