@@ -1,5 +1,6 @@
 import SwiftUI
 import AVFoundation
+import PhotosUI
 
 class CameraViewModel: ObservableObject {
     @Published var frontImage: UIImage?
@@ -12,7 +13,18 @@ class CameraViewModel: ObservableObject {
     @Published var showingNameInput = false
     @Published var preworkoutName = ""
     @Published var navigateToScan: PreworkoutScan?
+    @Published var cameraPermissionDenied = false
     private var response: AnalysisResponse?
+    
+    func showCamera() {
+        showingImagePicker = true
+    }
+    
+    func resetCameraState() {
+        if isCapturingFront && frontImage != nil {
+            isCapturingFront = false
+        }
+    }
     
     func convertToBase64(_ image: UIImage) -> String? {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else { return nil }
@@ -88,6 +100,68 @@ class CameraViewModel: ObservableObject {
     }
 }
 
+struct NameInputView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var name: String
+    let onSave: () -> Void
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                TextField("Preworkout Name", text: $name)
+            }
+            .navigationTitle("Name Your Preworkout")
+            .navigationBarItems(
+                leading: Button("Cancel") {
+                    name = ""
+                    dismiss()
+                },
+                trailing: Button("Save") {
+                    onSave()
+                    dismiss()
+                }
+                .disabled(name.isEmpty)
+            )
+        }
+    }
+}
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: ImagePicker
+        
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+        
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            if let image = info[.originalImage] as? UIImage {
+                parent.image = image
+            }
+            picker.dismiss(animated: true)
+        }
+        
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            picker.dismiss(animated: true)
+        }
+    }
+}
+
 struct CameraView: View {
     @StateObject private var viewModel = CameraViewModel()
     
@@ -99,7 +173,7 @@ struct CameraView: View {
                         .font(.headline)
                     
                     Button(action: {
-                        viewModel.showingImagePicker = true
+                        viewModel.showCamera()
                     }) {
                         Image(systemName: "camera.fill")
                             .font(.largeTitle)
@@ -155,29 +229,22 @@ struct CameraView: View {
             }
             .padding()
             .navigationTitle("Scan")
-            .sheet(isPresented: $viewModel.showingImagePicker) {
-                ImagePicker(image: viewModel.isCapturingFront ? $viewModel.frontImage : $viewModel.backImage)
-                    .onDisappear {
-                        if viewModel.isCapturingFront && viewModel.frontImage != nil {
-                            viewModel.isCapturingFront = false
-                        }
-                    }
+            .sheet(isPresented: $viewModel.showingImagePicker, onDismiss: {
+                viewModel.resetCameraState()
+            }) {
+                ImagePicker(
+                    image: viewModel.isCapturingFront ? $viewModel.frontImage : $viewModel.backImage
+                )
+            }
+            .sheet(isPresented: $viewModel.showingNameInput) {
+                NameInputView(name: $viewModel.preworkoutName) {
+                    viewModel.handleSave()
+                }
             }
             .alert("Error", isPresented: $viewModel.showError) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(viewModel.error ?? "An unknown error occurred")
-            }
-            .alert("Name Your Preworkout", isPresented: $viewModel.showingNameInput) {
-                TextField("Preworkout Name", text: $viewModel.preworkoutName)
-                Button("Cancel", role: .cancel) {
-                    viewModel.handleCancel()
-                }
-                Button("Save") {
-                    viewModel.handleSave()
-                }
-            } message: {
-                Text("Please enter a name for your preworkout")
             }
             .navigationDestination(item: $viewModel.navigateToScan) { scan in
                 PreworkoutDetailView(scan: scan, viewModel: HomeViewModel())
@@ -190,43 +257,6 @@ struct CameraView: View {
                         .cornerRadius(10)
                 }
             }
-        }
-    }
-}
-
-struct ImagePicker: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
-    @Environment(\.presentationMode) var presentationMode
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.sourceType = .camera
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ImagePicker
-        
-        init(_ parent: ImagePicker) {
-            self.parent = parent
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[.originalImage] as? UIImage {
-                parent.image = image
-            }
-            parent.presentationMode.wrappedValue.dismiss()
-        }
-        
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.presentationMode.wrappedValue.dismiss()
         }
     }
 } 
