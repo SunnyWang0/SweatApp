@@ -14,10 +14,33 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+        
+        // Create sample wines
+        let supplementNames = ["C4", "Bang", "BuggedUp"]
+        let supplementTypes = ["Preworkout", "Energy Drink", "Preworkout"]
+        
+        for i in 0..<supplementNames.count {
+            let supplement = Supplement(context: viewContext)
+            supplement.id = UUID()
+            supplement.name = supplementNames[i]
+            supplement.type = supplementTypes[i]
+            
+            // Create a scan for each wine
+            let scan = Scan(context: viewContext)
+            scan.id = UUID()
+            scan.date = Date().addingTimeInterval(Double(-i * 86400))
+            scan.supplement = supplement
+            
+            // Add some ratings
+            if i < 2 {
+                let rating = Rating(context: viewContext)
+                rating.id = UUID()
+                rating.date = Date()
+                rating.score = Double(4 + i)
+                rating.supplement = supplement
+            }
         }
+        
         do {
             try viewContext.save()
         } catch {
