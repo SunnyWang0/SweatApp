@@ -34,18 +34,51 @@ interface GeminiResponse {
 const MODEL_NAME = 'gemini-2.0-flash-thinking-exp-1219';
 
 async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Promise<PreworkoutAnalysis> {
-	const prompt = `Analyze this preworkout supplement label. For each ingredient:
-		1. List its exact quantity as shown on the label
-		2. Explain what this ingredient does in clear, straightforward language
-		3. Describe its main benefits and effects in full sentences that any adult can understand
+	const prompt = `Analyze this preworkout supplement label with scientific precision. For each ingredient:
+		1. List its exact quantity as shown on the label, including unit of measurement
+		2. Compare the quantity to clinically effective dosages from scientific literature
+		3. Explain its primary mechanisms of action and physiological effects
+		4. List specific benefits with consideration of the provided dosage
 		
-		Then rate the following qualities on a scale of 1-100 based on the ingredients and their effects. Also make sure to consider the quantity of the ingredient as it can effect how much you feel each quality:
-		- Pump (muscle blood flow and vasodilation)
-		- Energy (stimulant effects and alertness)
-		- Focus (mental clarity and concentration)
-		- Recovery (muscle recovery and reduced soreness)
-		- Endurance (stamina and performance)
-		
+		Then rate the following qualities on a scale of 1-100, where:
+		- 1-20: Minimal/negligible effect
+		- 21-40: Light effect
+		- 41-60: Moderate effect
+		- 61-80: Strong effect
+		- 81-100: Very strong effect
+
+		Consider these specific criteria for each rating:
+
+		Pump (muscle blood flow and vasodilation):
+		- Presence and dosage of nitric oxide boosters (L-Citrulline, Arginine, etc.)
+		- Vasodilators and blood flow enhancers
+		- Ingredients that improve nutrient delivery
+		- Synergistic effects between ingredients
+
+		Energy (stimulant effects and alertness):
+		- Caffeine content and form (anhydrous, di-caffeine malate, etc.)
+		- Additional stimulants present
+		- Energy sustaining ingredients
+		- Potential crash factors
+
+		Focus (mental clarity and concentration):
+		- Nootropic ingredients and dosages
+		- Cognitive enhancers
+		- Focus-supporting amino acids
+		- Stimulant contribution to focus
+
+		Recovery (muscle recovery and reduced soreness):
+		- Branch chain amino acids (BCAAs)
+		- Essential amino acids (EAAs)
+		- Anti-inflammatory ingredients
+		- Cellular hydration enhancers
+
+		Endurance (stamina and performance):
+		- Beta-alanine content
+		- Performance enhancers
+		- Fatigue-fighting ingredients
+		- ATP production supporters
+
 		Format the response as JSON with this structure:
 		{
 			"ingredients": [
@@ -64,7 +97,9 @@ async function analyzePreworkoutImage(imageBase64: string, apiKey: string): Prom
 			}
 		}
 		
-		Make sure each effect description is written in plain English that any adult can understand. Do not include any other text or commentary in your response.`;
+		Ensure each effect description is evidence-based and clearly explains the mechanism of action. Consider ingredient interactions and timing effects. Effects should be written in conversational English that any adult can understand. 
+		
+		Do not include any other text or commentary in your response.`;
 
 	const requestBody = {
 		contents: [{
