@@ -1,0 +1,118 @@
+{
+  "ingredients": [
+    {
+      "name": "Vitamin B12 (as Methylcobalamin)",
+      "quantity": "100mcg",
+      "effects": [
+        "Plays a crucial role in energy production by helping convert food into usable energy.",
+        "Supports nerve function and the formation of red blood cells.",
+        "The provided dose is significantly above the daily recommended intake, potentially offering benefits for individuals with deficiencies."
+      ]
+    },
+    {
+      "name": "Sodium",
+      "quantity": "39mg",
+      "effects": [
+        "An essential electrolyte that helps regulate fluid balance and nerve and muscle function.",
+        "Contributes to muscle contractions and nerve impulses.",
+        "The amount is relatively low and primarily contributes to overall electrolyte balance, which can be beneficial during exercise."
+      ]
+    },
+    {
+      "name": "Citrulline Malate 2:1",
+      "quantity": "6,000mg",
+      "effects": [
+        "Increases nitric oxide production by being converted to L-arginine in the kidneys, leading to vasodilation (widening of blood vessels).",
+        "Improves blood flow and nutrient delivery to muscles.",
+        "May help reduce muscle fatigue and improve exercise performance.",
+        "The dosage is within the clinically effective range for enhancing nitric oxide production and exercise performance."
+      ]
+    },
+    {
+      "name": "Beta-Alanine",
+      "quantity": "2,000mg",
+      "effects": [
+        "Increases muscle carnosine levels, which act as a buffer to reduce acid buildup in muscles during high-intensity exercise.",
+        "Helps delay muscle fatigue and improve muscular endurance.",
+        "Can cause paresthesia (a harmless tingling sensation), which is a common side effect.",
+        "The dosage is on the lower end of the clinically effective range, but still likely to provide benefits for muscular endurance."
+      ]
+    },
+    {
+      "name": "Caffeine Anhydrous",
+      "quantity": "200mg",
+      "effects": [
+        "Acts as a central nervous system stimulant, increasing alertness, focus, and energy levels.",
+        "Can improve exercise performance by reducing perceived exertion and increasing power output.",
+        "Blocks adenosine receptors in the brain, reducing feelings of tiredness.",
+        "The dosage is moderate and likely to provide a noticeable energy boost without being excessively high for most individuals."
+      ]
+    },
+    {
+      "name": "AlphaSize\u00ae Alpha GPC",
+      "quantity": "200mg",
+      "effects": [
+        "A choline source that can increase levels of acetylcholine, a neurotransmitter involved in muscle contraction and cognitive function.",
+        "May enhance focus, learning, and memory.",
+        "Could potentially improve power output and muscle contractions.",
+        "The dosage is on the lower end of the clinically studied range for cognitive benefits, but might still contribute to improved focus."
+      ]
+    },
+    {
+      "name": "Taurine",
+      "quantity": "100mg",
+      "effects": [
+        "An amino acid that plays a role in muscle function, hydration, and electrolyte balance.",
+        "May act as an antioxidant and protect against muscle damage.",
+        "Could enhance muscle contractions and reduce muscle cramps.",
+        "The dosage is relatively low, and its effects might be subtle at this level."
+      ]
+    },
+    {
+      "name": "Himalayan Rock Salt \u2013 with Trace Minerals",
+      "quantity": "100mg",
+      "effects": [
+        "Provides sodium and other electrolytes that are lost through sweat during exercise.",
+        "Helps maintain fluid balance and prevent dehydration.",
+        "Contributes to muscle function and nerve transmission.",
+        "The amount of sodium contributed is minimal, but the trace minerals might offer additional benefits."
+      ]
+    },
+    {
+      "name": "Deer Antler Velvet Extract",
+      "quantity": "50mg",
+      "effects": [
+        "While traditionally used for various purposes, scientific evidence for its efficacy in enhancing athletic performance is limited and often conflicting.",
+        "Some proponents suggest it may contain growth factors and other compounds that could aid in muscle recovery, but more robust research is needed.",
+        "At this dosage, the physiological effects are likely to be minimal."
+      ]
+    },
+    {
+      "name": "AstraGin\u00ae (Astragalus, Panax Notoginseng)",
+      "quantity": "25mg",
+      "effects": [
+        "A patented ingredient blend claimed to enhance nutrient absorption.",
+        "May improve the uptake of amino acids, vitamins, and other nutrients in the gut.",
+        "Could potentially increase the effectiveness of other ingredients in the supplement.",
+        "The dosage is within the typical range used for AstraGin\u00ae."
+      ]
+    },
+    {
+      "name": "ActiGin\u00ae (Panax Notoginseng, Rosa Roxburghii)",
+      "quantity": "25mg",
+      "effects": [
+        "Another patented ingredient blend suggested to promote muscle recovery and reduce inflammation.",
+        "May help improve energy production and reduce muscle damage after exercise.",
+        "Could potentially contribute to faster recovery times.",
+        "The dosage is within the typical range used for ActiGin\u00ae."
+      ]
+    }
+  ],
+  "qualities": {
+    "pump": 65,
+    "energy": 70,
+    "focus": 55,
+    "recovery": 35,
+    "endurance": 60
+  }
+}
