@@ -183,67 +183,84 @@ struct CameraView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                if viewModel.frontImage == nil || viewModel.backImage == nil {
-                    Text(viewModel.isCapturingFront ? "Take a picture of the front" : "Take a picture of the ingredients")
-                        .font(.headline)
-                    
-                    Button(action: {
-                        viewModel.showCamera()
-                    }) {
-                        Image(systemName: "camera.fill")
-                            .font(.largeTitle)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .clipShape(Circle())
-                    }
-                }
+            ZStack {
+                Color(.systemBackground)
+                    .edgesIgnoringSafeArea(.all)
                 
-                HStack(spacing: 20) {
-                    if let frontImage = viewModel.frontImage {
-                        VStack {
-                            Image(uiImage: frontImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 150)
-                                .cornerRadius(10)
-                            Text("Front")
-                                .font(.caption)
+                VStack(spacing: 0) {
+                    Spacer()
+                    
+                    if viewModel.frontImage == nil || viewModel.backImage == nil {
+                        // Instructions and status
+                        Text(viewModel.isCapturingFront ? "Take a picture of the front" : "Take a picture of the ingredients")
+                            .font(.title2)
+                            .fontWeight(.medium)
+                            .foregroundColor(.primary)
+                            .padding(.bottom, 30)
+                    }
+                    
+                    // Photos display
+                    if viewModel.frontImage != nil || viewModel.backImage != nil {
+                        VStack(spacing: 24) {
+                            Spacer()
+                            
+                            HStack(spacing: 20) {
+                                if let frontImage = viewModel.frontImage {
+                                    PhotoView(image: frontImage, title: "Front")
+                                }
+                                
+                                if let backImage = viewModel.backImage {
+                                    PhotoView(image: backImage, title: "Back")
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            Spacer()
+                            
+                            if viewModel.frontImage != nil && viewModel.backImage != nil {
+                                Button(action: {
+                                    viewModel.analyzePreworkout()
+                                }) {
+                                    HStack {
+                                        Image(systemName: "sparkles.magnifyingglass")
+                                        Text("Analyze Preworkout")
+                                    }
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 56)
+                                    .background(Color.blue)
+                                    .cornerRadius(16)
+                                    .shadow(radius: 4)
+                                }
+                                .padding(.horizontal, 24)
+                                .padding(.bottom, 32)
+                            }
                         }
                     }
                     
-                    if let backImage = viewModel.backImage {
-                        VStack {
-                            Image(uiImage: backImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 150)
-                                .cornerRadius(10)
-                            Text("Back")
-                                .font(.caption)
+                    Spacer()
+                    
+                    // Camera button
+                    if viewModel.frontImage == nil || viewModel.backImage == nil {
+                        Button(action: {
+                            viewModel.showCamera()
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.blue)
+                                    .frame(width: 80, height: 80)
+                                    .shadow(radius: 4)
+                                
+                                Image(systemName: "camera.fill")
+                                    .font(.system(size: 30))
+                                    .foregroundColor(.white)
+                            }
                         }
+                        .padding(.bottom, 48)
                     }
                 }
-                
-                if viewModel.frontImage != nil && viewModel.backImage != nil {
-                    Button(action: {
-                        viewModel.analyzePreworkout()
-                    }) {
-                        Text("Analyze Preworkout")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                    }
-                    .padding(.horizontal)
-                }
-                
-                Spacer()
             }
-            .padding()
             .navigationTitle("Scan")
             .sheet(isPresented: $viewModel.showingImagePicker, onDismiss: {
                 viewModel.resetCameraState()
@@ -269,12 +286,46 @@ struct CameraView: View {
             }
             .overlay {
                 if viewModel.isAnalyzing {
-                    ProgressView("Analyzing...")
-                        .padding()
-                        .background(Color.white.opacity(0.8))
-                        .cornerRadius(10)
+                    ZStack {
+                        Color.black.opacity(0.4)
+                            .edgesIgnoringSafeArea(.all)
+                        
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .scaleEffect(1.2)
+                            Text("Analyzing...")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                        }
+                        .padding(24)
+                        .background(Color(.systemBackground))
+                        .cornerRadius(16)
+                        .shadow(radius: 8)
+                    }
                 }
             }
+        }
+    }
+}
+
+// MARK: - Supporting Views
+
+struct PhotoView: View {
+    let image: UIImage
+    let title: String
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 280)
+                .cornerRadius(16)
+                .shadow(radius: 4)
+            
+            Text(title)
+                .font(.headline)
+                .foregroundColor(.secondary)
         }
     }
 } 
