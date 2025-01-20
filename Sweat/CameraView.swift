@@ -16,7 +16,25 @@ class CameraViewModel: ObservableObject {
     @Published var cameraPermissionDenied = false
     private var response: AnalysisResponse?
     
+    private func checkCameraConfiguration() {
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+            self.error = "Camera device not available"
+            self.showError = true
+            return
+        }
+        
+        do {
+            let session = AVCaptureSession()
+            try session.addInput(AVCaptureDeviceInput(device: device))
+            session.sessionPreset = .photo
+        } catch {
+            self.error = "Failed to configure camera: \(error.localizedDescription)"
+            self.showError = true
+        }
+    }
+    
     func showCamera() {
+        checkCameraConfiguration()
         showingImagePicker = true
     }
     
