@@ -1,0 +1,1 @@
+change these elements on the camera page. Move the photo button to be new the bottom middle of the screen. After taking the photos, make the photos that are shown larger and center the pair in the middle of the screen. In general make this page and its functionality more aesthetic
